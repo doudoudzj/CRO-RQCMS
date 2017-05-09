@@ -1,6 +1,8 @@
 RQCMS
 =====
 
+Original Repository: https://github.com/rq204/RQCMS
+
 一款小型的伪静态多站点内容管理系统
 
 RQCMS是要开发成一款伪静态,多站点内容管理系统.它具有的特性如下:
@@ -34,6 +36,8 @@ RQCMS是要开发成一款伪静态,多站点内容管理系统.它具有的特�
 程序结构简单清晰，代码注释详细，是PHP初学者学习入门的良好教材。
 
 官方500人QQ群:149855485
+
+官方网站：http://www.rqcms.com
 
 论坛地址：http://bbs.rqcms.com
 

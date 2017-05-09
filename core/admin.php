@@ -3,32 +3,58 @@
 //权限验证
 $username='';
 $groupid=$uid=0;
+$usertable= DB_PREFIX != 'rqcms_1_' ? DB_PREFIX.'user' : 'rqcms_admin';
 $sessionid=isset($_COOKIE['sessionid'])?$_COOKIE['sessionid']:'';
-if(isset($_GET['sessionid'])) $sessionid=$_GET['sessionid'];//在多站点切换时,使用这个来保持登陆状态
+if(isset($_GET['sessionid'])) $sessionid=$_GET['sessionid']; // 在多站点切换时,使用这个来保持登陆状态
 if(!empty($sessionid)&&strlen($sessionid)==30)
 {
-	$userinfo=$DB->fetch_first("Select * from rqcms_admin where `sessionid`='$sessionid'");//创始人可以登陆站点,其他人受限
-	if($userinfo)
-	{
-		$nowips=explode('.',$onlineip);
-		$oldips=explode('.',$userinfo['loginip']);
-		$diffip=array_diff_assoc($nowips,$oldips);
-		if(count($diffip)<2&&!isset($diffip[2])&&$useragent==$userinfo['useragent'])//当最后一位不同时认为是同一地点
+	// $isadmin =$DB->fetch_first("Select * from rqcms_admin where `sessionid`='$sessionid'"); // 判断是否创始人
+	// // $result = $isadmin ? $isadmin : $userinfo
+	// if($isadmin)
+	// {
+	// 	$nowips=explode('.',$onlineip);
+	// 	$oldips=explode('.',$isadmin['loginip']);
+	// 	$diffip=array_diff_assoc($nowips,$oldips);
+	// 	if(count($diffip)<2&&!isset($diffip[2])&&$useragent==$result['useragent'])//当最后一位不同时认为是同一地点
+	// 	{
+	// 		$uid=$isadmin['uid'];
+	// 		$username=$isadmin['username'];
+	// 		$groupid=$isadmin['groupid'];//0是游客,1注册会员,2编辑,3管理员,4创始人
+	// 	}
+	// 	if(!isset($_COOKIE['sessionid'])||$_COOKIE['sessionid']!=$sessionid)
+	// 	{	
+	// 		if(isset($_COOKIE['sessionid'])&&$_COOKIE['sessionid']!=$sessionid) 
+	// 		{
+	// 			setcookie('sessionid','');
+	// 		}
+	// 		else 
+	// 			setcookie('sessionid',$sessionid);
+	// 	}
+	// }
+	// else {
+		$userinfo=$DB->fetch_first('Select * from '.$usertable." where `sessionid`='$sessionid'");//创始人可以登陆站点,其他人受限
+		if($userinfo)
 		{
-			$uid=$userinfo['uid'];
-			$username=$userinfo['username'];
-			$groupid=$userinfo['groupid'];//0是游客,1注册会员,2编辑,3管理员,4创始人
-		}
-		if(!isset($_COOKIE['sessionid'])||$_COOKIE['sessionid']!=$sessionid)
-		{	
-			if(isset($_COOKIE['sessionid'])&&$_COOKIE['sessionid']!=$sessionid) 
+			$nowips=explode('.',$onlineip);
+			$oldips=explode('.',$userinfo['loginip']);
+			$diffip=array_diff_assoc($nowips,$oldips);
+			if(count($diffip)<2&&!isset($diffip[2])&&$useragent==$userinfo['useragent'])//当最后一位不同时认为是同一地点
 			{
-				setcookie('sessionid','');
+				$uid=$userinfo['uid'];
+				$username=$userinfo['username'];
+				$groupid=$userinfo['groupid'];//0是游客,1注册会员,2编辑,3管理员,4创始人
 			}
-			else 
-				setcookie('sessionid',$sessionid);
+			if(!isset($_COOKIE['sessionid'])||$_COOKIE['sessionid']!=$sessionid)
+			{	
+				if(isset($_COOKIE['sessionid'])&&$_COOKIE['sessionid']!=$sessionid) 
+				{
+					setcookie('sessionid','');
+				}
+				else 
+					setcookie('sessionid',$sessionid);
+			}
 		}
-	}
+	// }
 }
 
 $tempView=$coreView;//不用再去加载模板了
